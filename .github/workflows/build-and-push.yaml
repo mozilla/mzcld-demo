@@ -9,8 +9,8 @@ on:
 env:
   IMAGE_NAME: mzcld-demo
   GAR_LOCATION: us
-  GCP_PROJECT_ID: moz-fx-mzcld-demos-nonprod
-  IMAGE_NAMESPACE: us-docker.pkg.dev/moz-fx-mzcld-demo-nonprod/mzcld-demo-nonprod
+  GCP_PROJECT_ID: moz-fx-mzcld-demo-prod
+  IMAGE_NAMESPACE: us-docker.pkg.dev/moz-fx-mzcld-demo-prod/mzcld-demo-prod
 
 jobs:
   build-and-push:
