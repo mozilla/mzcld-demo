@@ -40,5 +40,4 @@ EXPOSE 8000
 
 USER app
 
-# ENTRYPOINT ["uv", "run", "--no-project", "opentelemetry-instrument", "fastapi", "run"]
-ENTRYPOINT ["uv", "run", "--no-project", "fastapi", "run"]
+ENTRYPOINT ["uv", "run", "--no-project", "uvicorn", "app.main:app", "--host", "0.0.0.0"]
