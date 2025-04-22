@@ -4,9 +4,8 @@ from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
 
 from app.observability import setup_otel_exporter, setup_structured_logging
 from app.routes import router
-from app.settings import Settings
+from app.settings import settings
 
-settings = Settings()
 setup_structured_logging()
 setup_otel_exporter("mzcld-demo", settings.otel_collector_endpoint)
 

@@ -26,6 +26,8 @@ from opentelemetry.sdk.metrics.export import (
 from opentelemetry.instrumentation.logging import LoggingInstrumentor
 from pythonjsonlogger.json import JsonFormatter
 
+from app.settings import settings
+
 logger = logging.getLogger(__name__)
 
 
@@ -39,6 +41,7 @@ def get_exporter(
 
 def setup_otel_exporter(app_name: str, endpoint: str = "localhost:4317"):
     logger.info("Starting opentelemetry exporter", extra={"endpoint": endpoint})
+
     # Service name is required for most backends
     resource = Resource.create(attributes={SERVICE_NAME: app_name})
     span_exporter, metric_exporter = get_exporter(endpoint)
@@ -56,13 +59,17 @@ def setup_otel_exporter(app_name: str, endpoint: str = "localhost:4317"):
 def setup_structured_logging() -> None:
     LoggingInstrumentor().instrument()
 
+    handler = [
+        "console-pretty" if settings.environment == "development" else "console-mozlog"
+    ]
+
     dictConfig(
         {
             "version": 1,
             "formatters": {
                 "json": {
                     "()": JsonFormatter,
-                    "format": "%(asctime)s %(levelname)s %(message)s %(otelTraceID)s %(otelSpanID)s %(otelTraceSampled)s",
+                    "format": "%(asctime)s %(name)s %(levelname)s %(message)s %(otelTraceID)s %(otelSpanID)s %(otelTraceSampled)s",
                     "rename_fields": {
                         "levelname": "severity",
                         "asctime": "timestamp",
@@ -70,8 +77,11 @@ def setup_structured_logging() -> None:
                         "otelSpanID": "logging.googleapis.com/spanId",
                         "otelTraceSampled": "logging.googleapis.com/trace_sampled",
                     },
-                    "datefmt": " %Y-%m-%dT%H:%M:%SZ",
-                }
+                    "datefmt": "%Y-%m-%dT%H:%M:%SZ",
+                },
+                "text": {
+                    "format": "%(message)s",
+                },
             },
             "handlers": {
                 "console-mozlog": {
@@ -80,13 +90,28 @@ def setup_structured_logging() -> None:
                     "formatter": "json",
                     "stream": sys.stdout,
                 },
+                "console-pretty": {
+                    "level": logging.INFO,
+                    "class": "rich.logging.RichHandler",
+                    "formatter": "text",
+                },
             },
             "loggers": {
                 "app": {
-                    "handlers": ["console-mozlog"],
+                    "handlers": handler,
                     "propagate": True,
                     "level": logging.INFO,
-                }
+                },
+                "uvicorn": {
+                    "handlers": handler,
+                    "propagate": True,
+                    "level": logging.INFO,
+                },
+                "fastapi": {
+                    "handlers": handler,
+                    "propagate": True,
+                    "level": logging.INFO,
+                },
             },
         }
     )
