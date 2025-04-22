@@ -36,7 +36,7 @@ jobs:
           password: ${{ steps.gcp-auth.outputs.access_token }}
       - name: Run the release script to build version.json file
         working-directory: .
-        run: ./release.sh
+        run: ./script/update_version.sh
       - name: Build and push image
         uses: docker/build-push-action@v3
         with:
