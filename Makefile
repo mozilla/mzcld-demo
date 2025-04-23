@@ -7,15 +7,12 @@ endif
 
 current_dir := $(shell basename $(CURDIR))
 
+build:
+	docker compose build
+
 run:
-	uv run fastapi run
+	docker compose up
 
-dev:
-	uv run fastapi dev
-
-build: 
-	docker build -t $(current_dir):latest .
-	
 start-container:
 	docker run -d -p 8000:8000 --rm $(current_dir):latest
 
