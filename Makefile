@@ -1,4 +1,4 @@
-.PHONY: run dev build start-container start-collector load-test
+.PHONY: run build start-container start-collector load-test
 
 ifneq (,$(wildcard ./.env))
     include .env

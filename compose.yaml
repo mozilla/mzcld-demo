@@ -14,7 +14,6 @@ services:
       watch:
         - path: ./app
           action: rebuild
-    command: ["web", "--dev"]
 
   otel-collector:
     image: otel/opentelemetry-collector-contrib

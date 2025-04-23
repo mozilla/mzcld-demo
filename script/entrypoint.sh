@@ -23,7 +23,7 @@ shift
 
 case ${SERVICE} in
 web)  ## Run webapp
-    exec /app/script/run_webapp.sh "$@"
+    exec uv run --no-project uvicorn app.main:app --host 0.0.0.0
     ;;
 shell)  ## Open a shell or run something else
     if [ -z "$*" ]; then
