@@ -18,19 +18,14 @@ WORKDIR $APP_HOME
 RUN groupadd --gid $groupid app \
   && useradd -m -g app --uid $userid -s /usr/sbin/nologin app
 
+# Install dependencies as root
+RUN --mount=type=cache,target=/root/.cache/uv \
+    --mount=type=bind,source=uv.lock,target=uv.lock \
+    --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
+    uv sync --frozen --no-dev --no-managed-python --no-install-project
+
 # Copy local code to the container image
-COPY . $APP_HOME
-
-# Install maxmind db and app dependencies. Clean up build tools after
-RUN apt-get update && \
-    apt-get install --yes build-essential && \
-    uv sync --frozen --no-cache --no-dev --no-managed-python && \
-    apt-get remove --yes build-essential && \
-    apt-get -q --yes autoremove && \
-    apt-get clean && \
-    rm -rf /root/.cache
-
-RUN chown -R app:app $APP_HOME
+COPY --chown=app:app . $APP_HOME
 
 # Set the PATH environment variable
 ENV PATH="$APP_HOME/.venv/bin:$PATH"
