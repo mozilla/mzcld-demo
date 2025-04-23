@@ -12,7 +12,7 @@ if [ -z "$*" ]; then
     echo "usage: entrypoint.sh SERVICE"
     echo ""
     echo "Services:"
-    grep -E '^[a-zA-Z0-9_-]+).*?## .*$$' bin/entrypoint.sh \
+    grep -E '^[a-zA-Z0-9_-]+).*?## .*$$' script/entrypoint.sh \
         | grep -v grep \
         | sed -n 's/^\(.*\)) \(.*\)##\(.*\)/* \1:\3/p'
     exit 1
