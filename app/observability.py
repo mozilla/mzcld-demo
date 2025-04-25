@@ -46,6 +46,11 @@ def get_exporter(
 
 
 def setup_otel_exporter(app_name: str, endpoint: str):
+    if settings.running_unittests == 1:
+        # If we're running unittests, skip setting up exporter and provider so
+        # it's using the default no-op things
+        return
+
     logger.info(
         "Starting opentelemetry exporter %s", endpoint, extra={"endpoint": endpoint}
     )
