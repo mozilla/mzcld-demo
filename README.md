@@ -33,3 +33,15 @@ To run tests:
 ```
 make test
 ```
+
+## Configuration
+
+Environment variables you can set:
+
+<dl>
+  <dt>`ENVIRONMENT`</dt>
+  <dd>The environment this is running in.</dd>
+
+  <dt>`OTEL_COLLECTOR_ENDPOINT`</dt>
+  <dd>Host and port for the OpenTelemetry collector to use.</dd>
+</dl>

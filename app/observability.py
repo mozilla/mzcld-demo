@@ -2,8 +2,12 @@ import logging
 from logging.config import dictConfig
 import sys
 from typing import Tuple
+
+# Instrumentation
+from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
 from opentelemetry.sdk.resources import SERVICE_NAME, Resource
 
+# Trace things
 from opentelemetry import trace
 from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import OTLPSpanExporter
 from opentelemetry.sdk.trace import TracerProvider
@@ -13,6 +17,7 @@ from opentelemetry.sdk.trace.export import (
     SpanExporter,
 )
 
+# Metrics things
 from opentelemetry import metrics
 from opentelemetry.exporter.otlp.proto.grpc.metric_exporter import OTLPMetricExporter
 from opentelemetry.sdk.metrics import MeterProvider
@@ -22,11 +27,12 @@ from opentelemetry.sdk.metrics.export import (
     PeriodicExportingMetricReader,
 )
 
-
+# Logging things
 from opentelemetry.instrumentation.logging import LoggingInstrumentor
 from pythonjsonlogger.json import JsonFormatter
 
 from app.settings import settings
+
 
 logger = logging.getLogger(__name__)
 
@@ -39,8 +45,10 @@ def get_exporter(
     return (OTLPSpanExporter(endpoint, True), OTLPMetricExporter(endpoint, True))
 
 
-def setup_otel_exporter(app_name: str, endpoint: str = "localhost:4317"):
-    logger.info("Starting opentelemetry exporter", extra={"endpoint": endpoint})
+def setup_otel_exporter(app_name: str, endpoint: str):
+    logger.info(
+        "Starting opentelemetry exporter %s", endpoint, extra={"endpoint": endpoint}
+    )
 
     # Service name is required for most backends
     resource = Resource.create(attributes={SERVICE_NAME: app_name})
@@ -115,3 +123,7 @@ def setup_structured_logging() -> None:
             },
         }
     )
+
+
+def instrument_app(app):
+    FastAPIInstrumentor.instrument_app(app)

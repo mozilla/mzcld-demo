@@ -8,15 +8,20 @@ ARG userid=10001
 COPY --from=ghcr.io/astral-sh/uv:0.6.14@sha256:3362a526af7eca2fcd8604e6a07e873fb6e4286d8837cb753503558ce1213664 /uv /uvx /bin/
 
 # Set environment variables
-ENV PYTHONUNBUFFERED=True
-ENV UV_COMPILE_BYTECODE=1
-ENV APP_HOME=/app
+ENV PYTHONUNBUFFERED=True \
+    PYTHONPATH=/app \
+    UV_COMPILE_BYTECODE=1 \
+    APP_HOME=/app
+
+RUN groupadd --gid $groupid app \
+  && useradd -m -g app --uid $userid -s /usr/sbin/nologin app
 
 # Set working directory
 WORKDIR $APP_HOME
 
-RUN groupadd --gid $groupid app \
-  && useradd -m -g app --uid $userid -s /usr/sbin/nologin app
+RUN chown -R app:app $APP_HOME
+
+USER app
 
 # Install dependencies as root
 RUN --mount=type=cache,target=/root/.cache/uv \
@@ -34,8 +39,6 @@ ENV PATH="$APP_HOME/.venv/bin:$PATH"
 FROM app_base AS web_api
 
 EXPOSE 8000
-
-USER app
 
 ENTRYPOINT ["/app/script/entrypoint.sh"]
 CMD ["web"]
