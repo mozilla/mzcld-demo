@@ -9,7 +9,9 @@ services:
     ports:
       - 8000:8000
     environment:
-      OTEL_COLLECTOR_HOST: otel-collector:4317
+      OTEL_COLLECTOR_ENDPOINT: otel-collector:4317
+    depends_on:
+      - otel-collector
     develop:
       watch:
         - path: ./app

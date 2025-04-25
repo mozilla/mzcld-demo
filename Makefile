@@ -13,6 +13,13 @@ build:
 run:
 	docker compose up
 
+lint:
+	docker compose run --rm app shell ruff format --check
+	docker compose run --rm app shell ruff check
+
+test:
+	docker compose run --rm web shell /app/script/test.sh
+
 start-container:
 	docker run -d -p 8000:8000 --rm $(current_dir):latest
 
