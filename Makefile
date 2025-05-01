@@ -32,6 +32,12 @@ start-collector:
 		otel/opentelemetry-collector-contrib:latest \
 		--config /etc/otelcol-config.yaml
 
+build-load-test:
+	docker build -t $(current_dir)-load-tests ./load-tests/
+
 load-test:
-	k6 --vus 20 --duration 30s run ./k6-script.js
+	docker run \
+		-v ./load-tests/k6-script.js:/k6-script.js \
+		$(current_dir)-load-tests run --vus 2 --duration 30s /k6-script.js
+	# k6 --vus 20 --duration 30s run ./load-tests/k6-script.js
 
