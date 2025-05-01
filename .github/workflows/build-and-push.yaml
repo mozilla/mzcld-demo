@@ -37,13 +37,23 @@ jobs:
       - name: Run the release script to build version.json file
         working-directory: .
         run: ./script/update_version.sh
-      - name: Build and push image
+      - name: Build and push app image
         uses: docker/build-push-action@v3
         with:
           context: .
           tags: |
             ${{ env.IMAGE_NAMESPACE }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
             ${{ env.IMAGE_NAMESPACE }}/${{ env.IMAGE_NAME }}:latest
+          push: true
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+      - name: Build and push load-test image
+        uses: docker/build-push-action@v3
+        with:
+          context: ./load-tests/
+          tags: |
+            ${{ env.IMAGE_NAMESPACE }}/${{ env.IMAGE_NAME }}-load-tests:${{ github.sha }}
+            ${{ env.IMAGE_NAMESPACE }}/${{ env.IMAGE_NAME }}-load-tests:latest
           push: true
           cache-from: type=gha
           cache-to: type=gha,mode=max
