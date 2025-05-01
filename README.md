@@ -45,6 +45,9 @@ Environment variables you can set:
   <dt>`OTEL_COLLECTOR_ENDPOINT`</dt>
   <dd>Host and port for the OpenTelemetry collector to use.</dd>
 
+  <dt>`LOAD_TEST_HOSTNAME`</dt>
+  <dd>Host and port for the load tests to use.</dd>
+
   <dt>`RUNNING_UNITTESTS`</dt>
   <dd>
     `1` if running unittests. This causes OpenTelemetry to be
