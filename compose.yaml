@@ -32,4 +32,5 @@ services:
     develop:
       watch:
         - path: ./collector-config.yaml
-          action: restart
+          target: /etc/otelcol-config.yaml
+          action: sync+restart
