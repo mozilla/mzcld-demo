@@ -72,9 +72,7 @@ def setup_otel_exporter(app_name: str, endpoint: str):
 def setup_structured_logging() -> None:
     LoggingInstrumentor().instrument()
 
-    handler = [
-        "console-pretty" if settings.environment == "development" else "console-mozlog"
-    ]
+    handler = ["console-pretty" if settings.environment == "dev" else "console-mozlog"]
 
     dictConfig(
         {
