@@ -5,10 +5,12 @@ import time
 from typing import Optional
 
 import httpx
-from fastapi import APIRouter, Response
+from fastapi import APIRouter, HTTPException, Response
+
 
 TARGET_ONE_SVC = os.environ.get("TARGET_ONE_SVC", "localhost:8000")
 TARGET_TWO_SVC = os.environ.get("TARGET_TWO_SVC", "localhost:8000")
+
 
 logger = logging.getLogger(__name__)
 router = APIRouter()
@@ -30,7 +32,7 @@ async def read_item(item_id: int, q: Optional[str] = None):
 async def io_task():
     time.sleep(1)
     logger.info("io task")
-    return "IO bound task finish!"
+    return {"msg": "IO bound task finish!"}
 
 
 @router.get("/cpu_task")
@@ -38,7 +40,7 @@ async def cpu_task():
     for i in range(1000):
         _ = i * i * i
     logger.info("cpu task")
-    return "CPU bound task finish!"
+    return {"msg": "CPU bound task finish!"}
 
 
 @router.get("/random_status")
@@ -55,12 +57,20 @@ async def random_sleep(response: Response):
     return {"path": "/random_sleep"}
 
 
-@router.get("/info_test")
-async def info_test(response: Response):
-    logger.info("got error!!!!")
+@router.get("/unhandled_exception")
+async def unhandled_exception(response: Response):
+    logger.error("got unhandled exception")
     raise ValueError("value error")
 
 
+@router.get("/http_exception")
+async def http_exception(response: Response):
+    logger.error("got http exception")
+    raise HTTPException(status_code=500, detail="http exception")
+
+
+# FIXME(willkg): We should redo this endpoint so it works in a local dev
+# environment and in stage/prod.
 @router.get("/chain")
 async def chain(response: Response):
     logger.info("Chain Start")
