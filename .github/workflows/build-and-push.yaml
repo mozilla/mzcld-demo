@@ -12,7 +12,7 @@ on:
       - main
 
 env:
-  IMAGE_NAME: mzcld-demo
+  IMAGE_NAME: mzcld-demo-web
   LOAD_TESTS_IMAGE_NAME: mzcld-demo-load-tests
   GCP_PROJECT_ID: moz-fx-mzcld-demo-prod
   IMAGE_REPO_PATH: moz-fx-mzcld-demo-prod/mzcld-demo-prod
