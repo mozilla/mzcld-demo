@@ -16,6 +16,7 @@ env:
   LOAD_TESTS_IMAGE_NAME: mzcld-demo-load-tests
   GCP_PROJECT_ID: moz-fx-mzcld-demo-prod
   IMAGE_REPO_PATH: moz-fx-mzcld-demo-prod/mzcld-demo-prod/mzcld-demo
+  LOAD_TESTS_IMAGE_REPO_PATH: moz-fx-mzcld-demo-prod/mzcld-demo-prod/mzcld-demo-load-tests
 
 jobs:
   build-and-push:
@@ -60,7 +61,7 @@ jobs:
         uses: mozilla-it/deploy-actions/docker-push@v3.11.1
         with:
           local_image: ${{ env.LOAD_TESTS_IMAGE_NAME }}
-          image_repo_path: ${{ secrets.DOCKER_IMAGE_PATH }}
+          image_repo_path: ${{ secrets.LOAD_TESTS_IMAGE_REPO_PATH }}
           image_tag: latest
           workload_identity_pool_project_number: ${{ vars.GCPV2_WORKLOAD_IDENTITY_POOL_PROJECT_NUMBER }}
           project_id: ${{ env.GCP_PROJECT_ID }}
